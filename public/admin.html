@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Quản lý người dùng</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header h1 i {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.2em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card i {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #bdc3c7, #2c3e50);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e6ed;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .user-details h4 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .user-details p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-free {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-premium {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #8b6914;
+        }
+
+        .badge-active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .badge-inactive {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .badge-admin {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .badge-user {
+            background: #e0f2f1;
+            color: #00695c;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e6ed;
+        }
+
+        .modal-header h3 {
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #7f8c8d;
+        }
+
+        .loading i {
+            font-size: 3em;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .premium-info {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #8b6914;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                min-width: auto;
+            }
+            
+            .table-container {
+                font-size: 14px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <i class="fas fa-users-cog"></i>
+                Quản lý người dùng
+            </h1>
+            <button class="btn btn-secondary" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                Đăng xuất
+            </button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <div class="stat-number" id="totalUsers">0</div>
+                <div class="stat-label">Tổng người dùng</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-crown"></i>
+                <div class="stat-number" id="premiumUsers">0</div>
+                <div class="stat-label">Người dùng Premium</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-check"></i>
+                <div class="stat-number" id="activeUsers">0</div>
+                <div class="stat-label">Người dùng hoạt động</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-link"></i>
+                <div class="stat-number" id="totalLinks">0</div>
+                <div class="stat-label">Tổng số link</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="controls">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm người dùng..." onkeyup="filterUsers()">
+                    <i class="fas fa-search"></i>
+                </div>
+                <select class="filter-select" id="planFilter" onchange="filterUsers()">
+                    <option value="">Tất cả gói</option>
+                    <option value="free">Free</option>
+                    <option value="premium">Premium</option>
+                </select>
+                <select class="filter-select" id="statusFilter" onchange="filterUsers()">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="active">Hoạt động</option>
+                    <option value="inactive">Không hoạt động</option>
+                </select>
+                <button class="btn btn-primary" onclick="refreshData()">
+                    <i class="fas fa-sync-alt"></i>
+                    Làm mới
+                </button>
+            </div>
+
+            <div id="alertContainer"></div>
+
+            <div class="table-container">
+                <div id="loadingContainer" class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Đang tải dữ liệu...</p>
+                </div>
+                <table id="usersTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Người dùng</th>
+                            <th>Gói</th>
+                            <th>Trạng thái</th>
+                            <th>Vai trò</th>
+                            <th>Số link</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal chỉnh sửa người dùng -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chỉnh sửa người dùng</h3>
+                <span class="close" onclick="closeModal('editModal')">&times;</span>
+            </div>
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId">
+                <div class="form-group">
+                    <label for="editFullName">Họ tên:</label>
+                    <input type="text" id="editFullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">Email:</label>
+                    <input type="email" id="editEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="editUsername">Username:</label>
+                    <input type="text" id="editUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPlan">Gói:</label>
+                    <select id="editPlan">
+                        <option value="free">Free</option>
+                        <option value="premium">Premium</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editRole">Vai trò:</label>
+                    <select id="editRole">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editIsActive">Trạng thái:</label>
+                    <select id="editIsActive">
+                        <option value="true">Hoạt động</option>
+                        <option value="false">Không hoạt động</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal đổi mật khẩu -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Đổi mật khẩu</h3>
+                <span class="close" onclick="closeModal('passwordModal')">&times;</span>
+            </div>
+            <form id="changePasswordForm">
+                <input type="hidden" id="passwordUserId">
+                <div class="form-group">
+                    <label for="newPassword">Mật khẩu mới:</label>
+                    <input type="password" id="newPassword" required minlength="6" placeholder="Ít nhất 6 ký tự">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Xác nhận mật khẩu:</label>
+                    <input type="password" id="confirmPassword" required minlength="6" placeholder="Nhập lại mật khẩu">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-key"></i>
+                        Đổi mật khẩu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let allUsers = [];
+        let filteredUsers = [];
+
+        // Kiểm tra xác thực admin
+        async function checkAdminAuth() {
+            try {
+                const response = await fetch('/api/me');
+                const data = await response.json();
+                
+                if (!data.success || data.user.role !== 'admin') {
+                    window.location.href = '/login.html';
+                    return false;
+                }
+                return true;
+            } catch (error) {
+                console.error('Lỗi kiểm tra xác thực:', error);
+                window.location.href = '/login.html';
+                return false;
+            }
+        }
+
+        // Tải dữ liệu người dùng
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/admin/users');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allUsers = data.data;
+                    filteredUsers = [...allUsers];
+                    displayUsers();
+                    updateStats();
+                } else {
+                    showAlert('Lỗi tải dữ liệu: ' + data.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Lỗi tải dữ liệu:', error);
+                showAlert('Lỗi kết nối server', 'danger');
+            } finally {
+                document.getElementById('loadingContainer').style.display = 'none';
+                document.getElementById('usersTable').style.display = 'table';
+            }
+        }
+
+        // Hiển thị danh sách người dùng
+        function displayUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+
+            filteredUsers.forEach(user => {
+                const row = document.createElement('tr');
+                
+                // Tính toán thông tin premium
+                let premiumInfo = '';
+                if (user.plan === 'premium' && user.premiumExpiry) {
+                    const expiryDate = new Date(user.premiumExpiry);
+                    const now = new Date();
+                    const isExpired = expiryDate < now;
+                    
+                    premiumInfo = `
+                        <div class="premium-info">
+                            <i class="fas fa-calendar"></i>
+                            ${isExpired ? 'Hết hạn' : 'Hết hạn'}: ${expiryDate.toLocaleDateString('vi-VN')}
+                        </div>
+                    `;
+                }
+
+                row.innerHTML = `
+                    <td>
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                ${user.fullName.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="user-details">
+                                <h4>${user.fullName}</h4>
+                                <p>@${user.username} • ${user.email}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge badge-${user.plan}">
+                            ${user.plan === 'premium' ? '<i class="fas fa-crown"></i> ' : ''}
+                            ${user.plan.toUpperCase()}
+                        </span>
+                        ${premiumInfo}
+                    </td>
+                    <td>
+                        <span class="badge badge-${user.isActive ? 'active' : 'inactive'}">
+                            <i class="fas fa-${user.isActive ? 'check-circle' : 'times-circle'}"></i>
+                            ${user.isActive ? 'Hoạt động' : 'Không hoạt động'}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge badge-${user.role}">
+                            <i class="fas fa-${user.role === 'admin' ? 'user-shield' : 'user'}"></i>
+                            ${user.role.toUpperCase()}
+                        </span>
+                    </td>
+                    <td>
+                        <strong>${user.linkCount}</strong> / ${user.maxLinks}
+                        <div style="font-size: 12px; color: #7f8c8d;">
+                            ${((user.linkCount / user.maxLinks) * 100).toFixed(1)}% sử dụng
+                        </div>
+                    </td>
+                    <td>${new Date(user.createdAt).toLocaleDateString('vi-VN')}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-sm" onclick="editUser('${user._id}')">
+                                <i class="fas fa-edit"></i>
+                                Sửa
+                            </button>
+                            ${user.plan === 'free' ? 
+                                `<button class="btn btn-success btn-sm" onclick="upgradeToPremium('${user._id}')">
+                                    <i class="fas fa-crown"></i>
+                                    Premium
+                                </button>` : 
+                                `<button class="btn btn-warning btn-sm" onclick="downgradeToPremium('${user._id}')">
+                                    <i class="fas fa-downgrade"></i>
+                                    Free
+                                </button>`
+                            }
+                            <button class="btn btn-secondary btn-sm" onclick="changePassword('${user._id}')">
+                                <i class="fas fa-key"></i>
+                                Đổi MK
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="viewUserLinks('${user._id}')">
+                                <i class="fas fa-link"></i>
+                                Links
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // Cập nhật thống kê
+        function updateStats() {
+            const totalUsers = allUsers.length;
+            const premiumUsers = allUsers.filter(u => u.plan === 'premium').length;
+            const activeUsers = allUsers.filter(u => u.isActive).length;
+            const totalLinks = allUsers.reduce((sum, u) => sum + u.linkCount, 0);
+
+            document.getElementById('totalUsers').textContent = totalUsers;
+            document.getElementById('premiumUsers').textContent = premiumUsers;
+            document.getElementById('activeUsers').textContent = activeUsers;
+            document.getElementById('totalLinks').textContent = totalLinks;
+        }
+
+        // Lọc người dùng
+        function filterUsers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const planFilter = document.getElementById('planFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            filteredUsers = allUsers.filter(user => {
+                const matchesSearch = user.fullName.toLowerCase().includes(searchTerm) ||
+                                    user.username.toLowerCase().includes(searchTerm) ||
+                                    user.email.toLowerCase().includes(searchTerm);
+                
+                const matchesPlan = !planFilter || user.plan === planFilter;
+                const matchesStatus = !statusFilter || 
+                                    (statusFilter === 'active' && user.isActive) ||
+                                    (statusFilter === 'inactive' && !user.isActive);
+
+                return matchesSearch && matchesPlan && matchesStatus;
+            });
+
+            displayUsers();
+        }
+
+        // Chỉnh sửa người dùng
+        function editUser(userId) {
+            const user = allUsers.find(u => u._id === userId);
+            if (!user) return;
+
+            document.getElementById('editUserId').value = user._id;
+            document.getElementById('editFullName').value = user.fullName;
+            document.getElementById('editEmail').value = user.email;
+            document.getElementById('editUsername').value = user.username;
+            document.getElementById('editPlan').value = user.plan;
+            document.getElementById('editRole').value = user.role;
+            document.getElementById('editIsActive').value = user.isActive.toString();
+
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        // Nâng cấp lên Premium
+        async function upgradeToPremium(userId) {
+            if (!confirm('Bạn có chắc muốn nâng cấp người dùng này lên Premium?')) return;
+
+            try {
+                const premiumExpiry = new Date();
+                premiumExpiry.setFullYear(premiumExpiry.getFullYear() + 1); // 1 năm
+
+                const response = await fetch(`/api/admin/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        plan: 'premium',
+                        premiumExpiry: premiumExpiry.toISOString()
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Nâng cấp Premium thành công!', 'success');
+                    refreshData();
+                } else {
+                    showAlert('Lỗi: ' + data.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Lỗi nâng cấp Premium:', error);
+                showAlert('Lỗi kết nối server', 'danger');
+            }
+        }
+
+        // Hạ xuống Free
+        async function downgradeToPremium(userId) {
+            if (!confirm('Bạn có chắc muốn hạ gói người dùng này xuống Free?')) return;
+
+            try {
+                const response = await fetch(`/api/admin/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        plan: 'free',
+                        premiumExpiry: null
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Hạ xuống Free thành công!', 'success');
+                    refreshData();
+                } else {
+                    showAlert('Lỗi: ' + data.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Lỗi hạ xuống Free:', error);
+                showAlert('Lỗi kết nối server', 'danger');
+            }
+        }
+
+        // Đổi mật khẩu
+        function changePassword(userId) {
+            document.getElementById('passwordUserId').value = userId;
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('passwordModal').style.display = 'block';
+        }
+
+        // Xem danh sách link của user
+        async function viewUserLinks(userId) {
+            try {
+                const response = await fetch(`/api/admin/users/${userId}/links`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const user = allUsers.find(u => u._id === userId);
+                    let linksHtml = `
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            <h4>Links của ${user.fullName} (${data.data.length} links)</h4>
+                            <table style="width: 100%; margin-top: 15px;">
+                                <thead>
+                                    <tr style="background: #f8f9fa;">
+                                        <th style="padding: 8px;">URL gốc</th>
+                                        <th style="padding: 8px;">Short URL</th>
+                                        <th style="padding: 8px;">Clicks</th>
+                                        <th style="padding: 8px;">Ngày tạo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+
+                    data.data.forEach(link => {
+                        linksHtml += `
+                            <tr>
+                                <td style="padding: 8px; max-width: 200px; overflow: hidden; text-overflow: ellipsis;">
+                                    <a href="${link.originalUrl}" target="_blank" title="${link.originalUrl}">
+                                        ${link.originalUrl.length > 50 ? link.originalUrl.substring(0, 50) + '...' : link.originalUrl}
+                                    </a>
+                                </td>
+                                <td style="padding: 8px;">
+                                    <a href="${link.shortUrl}" target="_blank">${link.shortUrl}</a>
+                                </td>
+                                <td style="padding: 8px; text-align: center;">${link.clicks}</td>
+                                <td style="padding: 8px;">${new Date(link.createdAt).toLocaleDateString('vi-VN')}</td>
+                            </tr>
+                        `;
+                    });
+
+                    linksHtml += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+
+                    showCustomModal('Danh sách Links', linksHtml);
+                } else {
+                    showAlert('Lỗi: ' + data.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Lỗi tải links:', error);
+                showAlert('Lỗi kết nối server', 'danger');
+            }
+        }
+
+        // Hiển thị modal tùy chỉnh
+        function showCustomModal(title, content) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 800px;">
+                    <div class="modal-header">
+                        <h3>${title}</h3>
+                        <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                    </div>
+                    <div>${content}</div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Đóng modal khi click outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        // Xử lý form chỉnh sửa người dùng
+        document.getElementById('editUserForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const userId = document.getElementById('editUserId').value;
+            const formData = {
+                fullName: document.getElementById('editFullName').value,
+                email: document.getElementById('editEmail').value,
+                username: document.getElementById('editUsername').value,
+                plan: document.getElementById('editPlan').value,
+                role: document.getElementById('editRole').value,
+                isActive: document.getElementById('editIsActive').value === 'true'
+            };
+
+            try {
+                const response = await fetch(`/api/admin/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Cập nhật thông tin thành công!', 'success');
+                    closeModal('editModal');
+                    refreshData();
+                } else {
+                    showAlert('Lỗi: ' + data.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Lỗi cập nhật:', error);
+                showAlert('Lỗi kết nối server', 'danger');
+            }
+        });
+
+        // Xử lý form đổi mật khẩu
+        document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                showAlert('Mật khẩu xác nhận không khớp!', 'danger');
+                return;
+            }
+
+            const userId = document.getElementById('passwordUserId').value;
+
+            try {
+                const response = await fetch(`/api/admin/users/${userId}/change-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ newPassword })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('Đổi mật khẩu thành công!', 'success');
+                    closeModal('passwordModal');
+                } else {
+                    showAlert('Lỗi: ' + data.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Lỗi đổi mật khẩu:', error);
+                showAlert('Lỗi kết nối server', 'danger');
+            }
+        });
+
+        // Đóng modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Hiển thị thông báo
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                ${message}
+            `;
+            
+            alertContainer.appendChild(alert);
+
+            // Tự động xóa sau 5 giây
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Làm mới dữ liệu
+        async function refreshData() {
+            document.getElementById('loadingContainer').style.display = 'block';
+            document.getElementById('usersTable').style.display = 'none';
+            await loadUsers();
+        }
+
+        // Đăng xuất admin
+        async function logout() {
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = '/admin-login.html';
+                }
+            } catch (error) {
+                console.error('Lỗi đăng xuất:', error);
+                window.location.href = '/admin-login.html';
+            }
+        }
+
+        // Đóng modal khi click outside
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        // Khởi tạo trang
+        document.addEventListener('DOMContentLoaded', async function() {
+            const isAuthorized = await checkAdminAuth();
+            if (isAuthorized) {
+                await loadUsers();
+            }
+        });
+
+        // Tự động làm mới dữ liệu mỗi 30 giây
+        setInterval(() => {
+            if (document.visibilityState === 'visible') {
+                loadUsers();
+            }
+        }, 30000);
+
+        // Xử lý phím tắt
+        document.addEventListener('keydown', function(e) {
+            // ESC để đóng modal
+            if (e.key === 'Escape') {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    if (modal.style.display === 'block') {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Ctrl + R để làm mới
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                refreshData();
+            }
+        });
+    </script>
+</body>
+</html>

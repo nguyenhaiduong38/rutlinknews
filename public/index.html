@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rút Gọn Link - Fancy Media</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 2.5em;
+      }
+
+      p {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 1.5em;
+      }
+
+      .auth-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
+
+      .user-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .premium-badge {
+        background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        color: #333;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 12px;
+      }
+
+      .free-badge {
+        background: #e74c3c;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 12px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #555;
+      }
+
+      input[type="url"],
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+      }
+
+      input[type="url"]:focus,
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      input[type="password"]:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-premium {
+        background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        color: #333;
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      }
+
+      .result {
+        margin-top: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        display: none;
+      }
+
+      .url-list {
+        margin-top: 30px;
+      }
+
+      .url-item {
+        background: #f8f9fa;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+      }
+
+      .url-original {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+      }
+
+      .url-short {
+        color: #667eea;
+        margin-bottom: 5px;
+      }
+
+      .url-stats {
+        font-size: 12px;
+        color: #666;
+      }
+
+      .edit-slug {
+        margin-top: 10px;
+        display: none;
+      }
+
+      .edit-slug input {
+        padding: 8px;
+        margin-right: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .btn-small {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .error {
+        color: #e74c3c;
+        margin-top: 10px;
+      }
+
+      .success {
+        color: #27ae60;
+        margin-top: 10px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .checkbox-group {
+        margin: 15px 0;
+      }
+
+      .checkbox-group input[type="checkbox"] {
+        margin-right: 8px;
+      }
+
+      .premium-notice {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .tabs {
+        display: flex;
+        margin-bottom: 20px;
+      }
+
+      .tab {
+        flex: 1;
+        padding: 10px;
+        text-align: center;
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .tab.active {
+        background: #667eea;
+        color: white;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🔗 Rút Gọn Link News</h1>
+      <p>©️Copyright By Justin BiBen</p>
+
+      <!-- Auth Section -->
+      <div id="authSection" class="auth-section">
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab('login')">Đăng Nhập</div>
+          <div class="tab" onclick="switchTab('register')">Đăng Ký</div>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginTab" class="tab-content active">
+          <form id="loginForm">
+            <div class="form-group">
+              <label for="loginUsername">Username/Email:</label>
+              <input type="text" id="loginUsername" required />
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Mật khẩu:</label>
+              <input type="password" id="loginPassword" required />
+            </div>
+            <button type="submit" class="btn">Đăng Nhập</button>
+          </form>
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerTab" class="tab-content">
+          <form id="registerForm">
+            <div class="form-group">
+              <label for="registerUsername">Username:</label>
+              <input type="text" id="registerUsername" required />
+            </div>
+            <div class="form-group">
+              <label for="registerEmail">Email:</label>
+              <input type="email" id="registerEmail" required />
+            </div>
+            <div class="form-group">
+              <label for="registerFullName">Họ tên:</label>
+              <input type="text" id="registerFullName" required />
+            </div>
+            <div class="form-group">
+              <label for="registerPassword">Mật khẩu:</label>
+              <input type="password" id="registerPassword" required />
+            </div>
+            <button type="submit" class="btn">Đăng Ký</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- User Info Section -->
+      <div id="userSection" class="auth-section hidden">
+        <div class="user-info">
+          <div>
+            <strong id="userFullName"></strong>
+            <span id="userPlan" class="free-badge">FREE</span>
+          </div>
+          <button class="btn btn-danger" onclick="logout()">Đăng Xuất</button>
+        </div>
+        <div>
+          <span>Số link đã tạo: </span><strong id="linkCount">0</strong>
+          <span> / </span><strong id="maxLinks">0</strong>
+        </div>
+        <div id="upgradeSection" class="hidden">
+          <button class="btn btn-premium" onclick="upgradePremium()" disabled>
+            🌟 Nâng Cấp Premium
+          </button>
+        </div>
+      </div>
+
+      <!-- Premium Notice -->
+      <div id="premiumNotice" class="premium-notice hidden">
+        ⚠️ Chỉ tài khoản Premium mới có thể rút gọn link. Vui lòng nâng cấp để sử dụng tính năng này!
+      </div>
+
+      <!-- Shorten Form -->
+      <div id="shortenSection" class="hidden">
+        <form id="shortenForm">
+          <div class="form-group">
+            <label for="originalUrl">URL gốc:</label>
+            <input
+              type="url"
+              id="originalUrl"
+              placeholder="https://example.com/hungtaixiu"
+              required
+            />
+          </div>
+
+          <div class="checkbox-group">
+            <label>
+              <input type="checkbox" id="useRandomSlug" onchange="toggleSlugInput()">
+              Sử dụng slug ngẫu nhiên
+            </label>
+          </div>
+
+          <div class="form-group" id="customSlugGroup">
+            <label for="customSlug">Slug tùy chỉnh (không bắt buộc):</label>
+            <input
+              type="text"
+              id="customSlug"
+              placeholder="justin biben"
+            />
+            <small style="color: #666">
+              Chỉ chứa chữ cái, số, dấu gạch ngang và gạch dưới
+            </small>
+          </div>
+
+          <button type="submit" class="btn">Rút Gọn Link</button>
+          <button type="button" class="btn" onclick="loadUrls()">
+            Tải Danh Sách
+          </button>
+        </form>
+      </div>
+
+      <div id="result" class="result"></div>
+      <div id="message"></div>
+
+      <div class="url-list" id="urlListSection" class="hidden">
+        <h3>Danh sách Links đã rút gọn:</h3>
+        <div id="urlList"></div>
+      </div>
+    </div>
+
+    <script>
+      let currentUser = null;
+
+      // Switch tabs
+      function switchTab(tabName) {
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+        document.getElementById(`${tabName}Tab`).classList.add('active');
+      }
+
+      // Toggle slug input
+      function toggleSlugInput() {
+        const useRandom = document.getElementById('useRandomSlug').checked;
+        const customSlugGroup = document.getElementById('customSlugGroup');
+        
+        if (useRandom) {
+          customSlugGroup.style.display = 'none';
+          document.getElementById('customSlug').value = '';
+        } else {
+          customSlugGroup.style.display = 'block';
+        }
+      }
+
+      // Đăng nhập
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+
+        try {
+          const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ username, password }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            currentUser = data.user;
+            updateUI();
+            showMessage('Đăng nhập thành công!', 'success');
+          } else {
+            showMessage(data.message, 'error');
+          }
+        } catch (error) {
+          showMessage('Lỗi kết nối server', 'error');
+        }
+      });
+
+      // Đăng ký
+      document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const username = document.getElementById('registerUsername').value;
+        const email = document.getElementById('registerEmail').value;
+        const fullName = document.getElementById('registerFullName').value;
+        const password = document.getElementById('registerPassword').value;
+
+        try {
+          const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ username, email, fullName, password }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            currentUser = data.user;
+            updateUI();
+            showMessage('Đăng ký thành công!', 'success');
+          } else {
+            showMessage(data.message, 'error');
+          }
+        } catch (error) {
+          showMessage('Lỗi kết nối server', 'error');
+        }
+      });
+
+      // Đăng xuất
+      async function logout() {
+        try {
+          await fetch('/api/logout', {
+            method: 'POST',
+            credentials: 'include'
+          });
+          
+          currentUser = null;
+          updateUI();
+          showMessage('Đăng xuất thành công!', 'success');
+        } catch (error) {
+          showMessage('Lỗi đăng xuất', 'error');
+        }
+      }
+
+      // Nâng cấp Premium
+      async function upgradePremium() {
+        try {
+          const response = await fetch('/api/upgrade-premium', {
+            method: 'POST',
+            credentials: 'include'
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            currentUser = data.user;
+            updateUI();
+            showMessage('Nâng cấp Premium thành công!', 'success');
+          } else {
+            showMessage(data.message, 'error');
+          }
+        } catch (error) {
+          showMessage('Lỗi nâng cấp', 'error');
+        }
+      }
+
+      // Cập nhật giao diện
+      function updateUI() {
+        if (currentUser) {
+          // Ẩn form đăng nhập/đăng ký
+          document.getElementById('authSection').classList.add('hidden');
+          
+          // Hiển thị thông tin user
+          document.getElementById('userSection').classList.remove('hidden');
+          document.getElementById('userFullName').textContent = currentUser.fullName;
+          document.getElementById('linkCount').textContent = currentUser.linkCount;
+          document.getElementById('maxLinks').textContent = currentUser.maxLinks;
+          
+          // Cập nhật badge plan
+          const planBadge = document.getElementById('userPlan');
+          if (currentUser.plan === 'premium') {
+            planBadge.textContent = 'PREMIUM';
+            planBadge.className = 'premium-badge';
+            document.getElementById('upgradeSection').classList.add('hidden');
+            document.getElementById('premiumNotice').classList.add('hidden');
+            document.getElementById('shortenSection').classList.remove('hidden');
+          } else {
+            planBadge.textContent = 'FREE';
+            planBadge.className = 'free-badge';
+            document.getElementById('upgradeSection').classList.remove('hidden');
+            document.getElementById('premiumNotice').classList.remove('hidden');
+            document.getElementById('shortenSection').classList.add('hidden');
+          }
+          
+          document.getElementById('urlListSection').classList.remove('hidden');
+          loadUrls();
+        } else {
+          // Hiển thị form đăng nhập
+          document.getElementById('authSection').classList.remove('hidden');
+          document.getElementById('userSection').classList.add('hidden');
+          document.getElementById('shortenSection').classList.add('hidden');
+          document.getElementById('urlListSection').classList.add('hidden');
+          document.getElementById('premiumNotice').classList.add('hidden');
+        }
+      }
+
+      // Rút gọn URL
+      document.getElementById('shortenForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const originalUrl = document.getElementById('originalUrl').value;
+        const customSlug = document.getElementById('customSlug').value;
+        const useRandomSlug = document.getElementById('useRandomSlug').checked;
+
+        try {
+          const response = await fetch('/api/shorten', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ originalUrl, customSlug, useRandomSlug }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showResult(data.data);
+            loadUrls(); // Tải lại danh sách
+            // Reset form
+            document.getElementById('shortenForm').reset();
+            document.getElementById('useRandomSlug').checked = false;
+            toggleSlugInput();
+          } else {
+            showMessage(data.message, 'error');
+          }
+        } catch (error) {
+          showMessage('Lỗi kết nối server', 'error');
+        }
+      });
+
+      // Hiển thị kết quả
+      function showResult(data) {
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `
+          <h3>✅ Rút gọn thành công!</h3>
+          <p><strong>URL gốc:</strong> ${data.originalUrl}</p>
+          <p><strong>URL rút gọn:</strong> <a href="${data.shortUrl}" target="_blank">${data.shortUrl}</a></p>
+          <button class="btn btn-small" onclick="copyToClipboard('${data.shortUrl}')">Copy</button>
+          <p><strong>Lượt click:</strong> ${data.clicks}</p>
+          <p><strong>Ngày tạo:</strong> ${new Date(data.createdAt).toLocaleString('vi-VN')}</p>
+        `;
+        resultDiv.style.display = 'block';
+      }
+
+      // Hiển thị thông báo
+      function showMessage(message, type) {
+        const messageDiv = document.getElementById('message');
+        messageDiv.innerHTML = `<div class="${type}">${message}</div>`;
+        setTimeout(() => {
+          messageDiv.innerHTML = '';
+        }, 5000);
+      }
+
+      // Tải danh sách URLs
+      async function loadUrls() {
+        if (!currentUser) return;
+        
+        try {
+          const response = await fetch('/api/urls', {
+            credentials: 'include'
+          });
+          const data = await response.json();
+
+          if (data.success) {
+            displayUrls(data.data);
+            // Cập nhật số lượng link
+            if (currentUser) {
+              currentUser.linkCount = data.data.length;
+              document.getElementById('linkCount').textContent = currentUser.linkCount;
+            }
+          }
+        } catch (error) {
+          console.error('Lỗi tải danh sách:', error);
+        }
+      }
+
+      // Hiển thị danh sách URLs
+      function displayUrls(urls) {
+        const urlListDiv = document.getElementById('urlList');
+
+        if (urls.length === 0) {
+          urlListDiv.innerHTML = '<p>Chưa có URL nào được rút gọn.</p>';
+          return;
+        }
+
+        urlListDiv.innerHTML = urls
+          .map(
+            (url) => `
+              <div class="url-item">
+                <div class="url-original">${url.originalUrl}</div>
+                <div class="url-short">
+                  <a href="${url.shortUrl}" target="_blank">${url.shortUrl}</a>
+                </div>
+                <div class="url-stats">
+                  Lượt click: ${url.clicks} | 
+                  Ngày tạo: ${new Date(url.createdAt).toLocaleString('vi-VN')}
+                  ${url.lastAccessed ? `| Truy cập cuối: ${new Date(url.lastAccessed).toLocaleString('vi-VN')}` : ''}
+                </div>
+                <button class="btn btn-small" onclick="copyToClipboard('${url.shortUrl}')">Copy</button>
+                <button class="btn btn-small" onclick="toggleEditSlug('${url.urlId}')">Sửa Slug</button>
+                <div id="edit-${url.urlId}" class="edit-slug">
+                  <input type="text" id="newSlug-${url.urlId}" value="${url.customSlug || url.urlId}" placeholder="slug-moi">
+                  <button class="btn btn-small" onclick="updateSlug('${url.urlId}')">Cập nhật</button>
+                  <button class="btn btn-small" onclick="toggleEditSlug('${url.urlId}')">Hủy</button>
+                </div>
+              </div>
+            `
+          )
+          .join('');
+      }
+
+      // Toggle form sửa slug
+      function toggleEditSlug(urlId) {
+        const editDiv = document.getElementById(`edit-${urlId}`);
+        editDiv.style.display = editDiv.style.display === 'none' ? 'block' : 'none';
+      }
+
+      // Cập nhật slug
+      async function updateSlug(urlId) {
+        const newSlug = document.getElementById(`newSlug-${urlId}`).value;
+
+        if (!newSlug) {
+          showMessage('Vui lòng nhập slug mới', 'error');
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/update-slug/${urlId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ newSlug }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showMessage('Cập nhật slug thành công!', 'success');
+            loadUrls(); // Tải lại danh sách
+          } else {
+            showMessage(data.message, 'error');
+          }
+        } catch (error) {
+          showMessage('Lỗi kết nối server', 'error');
+        }
+      }
+
+      // Copy to clipboard
+      function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+          showMessage('Đã copy link vào clipboard!', 'success');
+        }).catch(err => {
+          showMessage('Không thể copy link', 'error');
+          console.error('Clipboard error:', err);
+        });
+      }
+
+      // Kiểm tra trạng thái đăng nhập khi tải trang
+      async function checkAuthStatus() {
+        try {
+          const response = await fetch('/api/me', {
+            credentials: 'include'
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              currentUser = data.user;
+            }
+          }
+        } catch (error) {
+          // User chưa đăng nhập
+        }
+        
+        updateUI();
+      }
+
+      // Tải trang
+      window.onload = function () {
+        checkAuthStatus();
+      };
+    </script>
+  </body>
+</html>
