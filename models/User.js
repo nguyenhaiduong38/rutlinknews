@@ -77,7 +77,7 @@ const userSchema = new mongoose.Schema({
 // Set maxLinks based on plan
 userSchema.pre('save', function(next) {
   if (this.isModified('plan')) {
-    this.maxLinks = this.plan === 'premium' ? 10000 : 100;
+    this.maxLinks = this.plan === 'premium' ? 999999999 : 100;
   }
   next();
 });
