@@ -257,7 +257,6 @@ app.post('/api/upgrade-premium', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     user.plan = 'premium';
-    user.maxLinks = 10000; // Premium có thể tạo nhiều link hơn
     await user.save();
 
     res.json({
@@ -298,13 +297,15 @@ app.put('/api/admin/users/:id', adminAuth, async (req, res) => {
     const updates = req.body;
 
     // Nếu thay đổi plan, maxLinks sẽ được cập nhật tự động bởi pre-save
-    const user = await User.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+  const user = await User.findById(id);
+if (!user) {
+  return res.status(404).json({ success: false, message: 'User không tồn tại' });
+}
 
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User không tồn tại' });
-    }
+Object.assign(user, updates); // cập nhật các field từ req.body
+await user.save(); // sẽ kích hoạt pre('save')
 
-    res.json({ success: true, data: user });
+res.json({ success: true, data: user });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
